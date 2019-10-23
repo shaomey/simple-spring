@@ -1,6 +1,10 @@
 package com.smy.factory;
 
-import com.smy.BeanDefination;
+import com.smy.BeanDefinition;
+import com.smy.BeanReference;
+import com.smy.PropertyValue;
+
+import java.lang.reflect.Field;
 
 /**
  * beanFactory实现类 实现了CreateBean方法
@@ -9,13 +13,16 @@ import com.smy.BeanDefination;
 public class AutowireCapableBeanFactory extends AbstractBeanFactory {
     /**
      * 使用newInstance获取类实例
-     * @param beanDefination
+     *
+     * @param beanDefinition
      * @return
      */
     @Override
-    protected Object doCreateBean(BeanDefination beanDefination) {
+    protected Object doCreateBean(BeanDefinition beanDefinition) throws Exception {
         try {
-            Object bean = beanDefination.getBeanCls().newInstance();
+            Object bean = createBeanInstancce(beanDefinition);
+            beanDefinition.setBean(bean);
+            applyPropertyValues(bean, beanDefinition);
             return bean;
         } catch (InstantiationException e) {
             e.printStackTrace();
@@ -24,4 +31,21 @@ public class AutowireCapableBeanFactory extends AbstractBeanFactory {
         }
         return null;
     }
+
+    protected Object createBeanInstancce(BeanDefinition beanDefinition) throws Exception {
+        return beanDefinition.getBeanCls().newInstance();
+    }
+
+    protected void applyPropertyValues(Object bean, BeanDefinition beanDefinition) throws Exception {
+        for (PropertyValue propertyValue : beanDefinition.getPropertyValues().getPropertyValueList()) {
+            Field declaredField = bean.getClass().getDeclaredField(propertyValue.getName());
+            declaredField.setAccessible(true);
+            Object value = propertyValue.getValue();
+            if (value instanceof BeanReference) {
+                value = getBean(((BeanReference) value).getName());
+            }
+            declaredField.set(bean, value);
+        }
+    }
+
 }

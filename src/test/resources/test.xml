@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+    <bean name="person" class="com.smy.Person">
+        <property name="word" value="Hello World"></property>
+        <property name="school" ref="school"></property>
+    </bean>
+    <bean name="school" class="com.smy.School">
+        <property name="age" value="12"></property>
+        <property name="person" ref="person"></property>
+    </bean>
+</beans>

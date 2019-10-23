@@ -5,7 +5,14 @@ package com.smy;
  * Created by shaomy on 2019/10/23/023.
  */
 public class Person {
-    public void say(){
-        System.out.println("I am a student");
+    private String word;
+    private School school;
+
+    public void say() {
+        System.out.println(word);
+    }
+
+    public void age() {
+        System.out.println(school.getAge());
     }
 }

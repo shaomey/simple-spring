@@ -1,20 +1,30 @@
 package com.smy;
 
+import com.smy.factory.AbstractBeanFactory;
 import com.smy.factory.AutowireCapableBeanFactory;
-import com.smy.factory.BeanFactroy;
+import com.smy.io.ResourceLoader;
+import com.smy.xml.XmlBeanDefinationReader;
 import org.junit.Test;
 
+import java.util.Map;
+
 /**
+ * Test
  * Created by shaomy on 2019/10/23/023.
  */
 public class BeanFactoryTest {
     @Test
-    public void test() {
-        BeanFactroy factroy = new AutowireCapableBeanFactory();
-        BeanDefination beanDefination = new BeanDefination();
-        beanDefination.setBeanClsName("com.smy.Person");
-        factroy.registerBeanDefination("person", beanDefination);
-        Person person = (Person) factroy.getBean("person");
-        person.say();
+    public void test1() throws Exception {
+        ResourceLoader loader = new ResourceLoader();
+        XmlBeanDefinationReader reader = new XmlBeanDefinationReader(loader);
+        reader.loadBeanDefination("test.xml");
+        AbstractBeanFactory factory = new AutowireCapableBeanFactory();
+        for (Map.Entry<String, BeanDefinition> beanDefinition : reader.getRegistry().entrySet()) {
+            factory.registerBeanDefinition(beanDefinition.getKey(), beanDefinition.getValue());
+        }
+        Person person = (Person) factory.getBean("person");
+        School school = (School) factory.getBean("school");
+        person.age();
+        school.print();
     }
 }

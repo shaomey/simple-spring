@@ -9,4 +9,6 @@
         <property name="age" value="12"></property>
         <property name="person" ref="person"></property>
     </bean>
+    <bean name="chinese" class="com.smy.Chinese">
+    </bean>
 </beans>

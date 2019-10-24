@@ -3,6 +3,7 @@ package com.smy.factory;
 import com.smy.BeanDefinition;
 import com.smy.BeanReference;
 import com.smy.PropertyValue;
+import convert.ConverterFactory;
 
 import java.lang.reflect.Field;
 
@@ -35,6 +36,9 @@ public class AutowireCapableBeanFactory extends AbstractBeanFactory {
     protected Object createBeanInstancce(BeanDefinition beanDefinition) throws Exception {
         return beanDefinition.getBeanCls().newInstance();
     }
+    public void preInit(){
+
+    }
 
     protected void applyPropertyValues(Object bean, BeanDefinition beanDefinition) throws Exception {
         for (PropertyValue propertyValue : beanDefinition.getPropertyValues().getPropertyValueList()) {
@@ -43,6 +47,13 @@ public class AutowireCapableBeanFactory extends AbstractBeanFactory {
             Object value = propertyValue.getValue();
             if (value instanceof BeanReference) {
                 value = getBean(((BeanReference) value).getName());
+            } else {
+                if (declaredField.getType().toString().equals("class java.lang.String")) {
+                    declaredField.set(bean, value);
+                    continue;
+                } else {
+                    value = ConverterFactory.getConverterMap().get(declaredField.getType()).convertParameter((String) value);
+                }
             }
             declaredField.set(bean, value);
         }

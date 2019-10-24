@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans>
     <bean name="person" class="com.smy.Person">
+        <property name="height" value="180"></property>
         <property name="word" value="Hello World"></property>
         <property name="school" ref="school"></property>
     </bean>

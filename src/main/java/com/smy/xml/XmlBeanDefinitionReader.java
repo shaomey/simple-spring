@@ -1,6 +1,6 @@
 package com.smy.xml;
 
-import com.smy.AbstractBeanDefinationReader;
+import com.smy.AbstractBeanDefinitionReader;
 import com.smy.BeanDefinition;
 import com.smy.BeanReference;
 import com.smy.PropertyValue;
@@ -18,8 +18,8 @@ import java.io.InputStream;
  * 解析xml类 讲过这里解析后Registry中的beanDefinition bean为空
  * Created by shaomy on 2019/10/23/023.
  */
-public class XmlBeanDefinationReader extends AbstractBeanDefinationReader {
-    public XmlBeanDefinationReader(ResourceLoader resourceLoader) {
+public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
+    public XmlBeanDefinitionReader(ResourceLoader resourceLoader) {
         super(resourceLoader);
     }
 

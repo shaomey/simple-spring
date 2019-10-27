@@ -24,6 +24,7 @@ public class BeanFactoryTest {
         }
         Person person = (Person) factory.getBean("person");
         School school = (School) factory.getBean("school");
+        person.age();
         person.sayHeight();
         school.print();
     }

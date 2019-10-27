@@ -3,6 +3,7 @@ package com.smy.factory;
 import com.smy.BeanDefinition;
 import com.smy.BeanReference;
 import com.smy.PropertyValue;
+import com.smy.annotation.Autowired;
 import convert.ConverterFactory;
 
 import java.lang.reflect.Field;
@@ -12,6 +13,21 @@ import java.lang.reflect.Field;
  * Created by shaomy on 2019/10/23/023.
  */
 public class AutowireCapableBeanFactory extends AbstractBeanFactory {
+
+
+    protected void injectAnnotation(Object bean) throws Exception {
+        Field[] fields = bean.getClass().getDeclaredFields();
+        for (Field field : fields) {
+            Autowired autowired = field.getAnnotation(Autowired.class);
+            if (autowired == null) {
+                continue;
+            }
+            field.setAccessible(true);
+            field.set(bean, getBean(field.getName()));
+        }
+    }
+
+
     /**
      * 使用newInstance获取类实例
      *
@@ -24,6 +40,7 @@ public class AutowireCapableBeanFactory extends AbstractBeanFactory {
             Object bean = createBeanInstancce(beanDefinition);
             beanDefinition.setBean(bean);
             applyPropertyValues(bean, beanDefinition);
+            injectAnnotation(bean);
             return bean;
         } catch (InstantiationException e) {
             e.printStackTrace();
@@ -36,7 +53,8 @@ public class AutowireCapableBeanFactory extends AbstractBeanFactory {
     protected Object createBeanInstancce(BeanDefinition beanDefinition) throws Exception {
         return beanDefinition.getBeanCls().newInstance();
     }
-    public void preInit(){
+
+    public void preInit() {
 
     }
 

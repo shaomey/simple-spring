@@ -1,6 +1,7 @@
 package com.smy.context;
 
 import com.smy.School;
+import com.smy.TestController;
 import org.junit.Test;
 
 /**
@@ -13,6 +14,8 @@ public class ApplicationContextTest {
         ApplicationContext context = new ClasspathXmlApplicationContext("test.xml");
         School school = (School) context.getBean("school");
         school.print();
+        TestController controller  = (TestController) context.getBean("testController");
+        controller.say();
 //        Field field = school.getClass().getDeclaredField("age");
 //        System.out.println(field.getType());
     }

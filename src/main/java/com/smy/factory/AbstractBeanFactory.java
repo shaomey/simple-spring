@@ -1,6 +1,7 @@
 package com.smy.factory;
 
 import com.smy.BeanDefinition;
+import com.smy.BeanPostProcessor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,9 +12,10 @@ import java.util.concurrent.ConcurrentHashMap;
  * beanFactory抽象类，定义了beanDefination容器
  * Created by shaomy on 2019/10/23/023.
  */
-public abstract class AbstractBeanFactory implements BeanFactroy {
+public abstract class AbstractBeanFactory implements BeanFactory {
     private Map<String, BeanDefinition> beanDefinitionMap = new ConcurrentHashMap<String, BeanDefinition>();
     private List<String> beanDefinitionNames = new ArrayList<>();
+    private List<BeanPostProcessor> beanPostProcessorList = new ArrayList<>();
 
     @Override
     public Object getBean(String name) throws Exception {
@@ -22,6 +24,8 @@ public abstract class AbstractBeanFactory implements BeanFactroy {
             Object bean = beanDefinition.getBean();
             if (bean == null) {
                 bean = doCreateBean(beanDefinition);
+                initializeBean(bean,name);
+                beanDefinition.setBean(bean);
             }
             return bean;
         }
@@ -39,6 +43,15 @@ public abstract class AbstractBeanFactory implements BeanFactroy {
         }
     }
 
+    public void initializeBean(Object bean, String name) throws Exception {
+        for (BeanPostProcessor beanPostProcessor : beanPostProcessorList) {
+            beanPostProcessor.postProcessBeforeInitialization(bean, name);
+        }
+        for (BeanPostProcessor beanPostProcessor : beanPostProcessorList) {
+            beanPostProcessor.postProcessBeforeInitialization(bean, name);
+        }
+    }
+
     public List<Object> getBeansForType(Class type) throws Exception {
         List<Object> beans = new ArrayList<Object>();
         for (String beanDefinitionName : beanDefinitionNames) {
@@ -50,5 +63,10 @@ public abstract class AbstractBeanFactory implements BeanFactroy {
         return beans;
     }
 
+
     protected abstract Object doCreateBean(BeanDefinition beanDefinition) throws Exception;
+
+    public void addPostProcessor(BeanPostProcessor postProcessor) {
+        beanPostProcessorList.add(postProcessor);
+    }
 }

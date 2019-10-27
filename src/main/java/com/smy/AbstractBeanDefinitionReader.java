@@ -12,11 +12,22 @@ import java.util.Map;
 public abstract class AbstractBeanDefinitionReader implements BeanDefinitionReader {
     private Map<String, BeanDefinition> registry;
     private ResourceLoader resourceLoader;
+    private String packageName;
+
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
+    }
 
     /**
      * registry 存储从xml中获取的beanDefination
+     *
      * @param resourceLoader {@link ResourceLoader}
      */
+
     public AbstractBeanDefinitionReader(ResourceLoader resourceLoader) {
         registry = new HashMap<String, BeanDefinition>();
         this.resourceLoader = resourceLoader;

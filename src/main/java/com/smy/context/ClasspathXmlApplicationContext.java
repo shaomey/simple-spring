@@ -2,6 +2,8 @@ package com.smy.context;
 
 import com.smy.AbstractBeanDefinitionReader;
 import com.smy.BeanDefinition;
+import com.smy.BeanPostProcessor;
+import com.smy.annotation.parser.AnnotationParser;
 import com.smy.factory.AbstractBeanFactory;
 import com.smy.factory.AutowireCapableBeanFactory;
 import com.smy.io.ResourceLoader;
@@ -25,6 +27,8 @@ public class ClasspathXmlApplicationContext extends AbstractApplicationContext {
         this.configLocation = configLocation;
         refersh();
         resigterConverter(beanFactory);
+        registerBeanPostProcessor(beanFactory);
+
     }
 
     public ClasspathXmlApplicationContext(String configLocation) throws Exception {
@@ -39,6 +43,13 @@ public class ClasspathXmlApplicationContext extends AbstractApplicationContext {
         }
     }
 
+    public void registerBeanPostProcessor(AbstractBeanFactory beanFactory) throws Exception {
+        List<Object> list = beanFactory.getBeansForType(BeanPostProcessor.class);
+        for (Object o : list) {
+            beanFactory.addPostProcessor((BeanPostProcessor) o);
+        }
+    }
+
     @Override
     public void refersh() throws Exception {
         ResourceLoader resourceLoader = new ResourceLoader();
@@ -47,5 +58,15 @@ public class ClasspathXmlApplicationContext extends AbstractApplicationContext {
         for (Map.Entry<String, BeanDefinition> definitionEntry : reader.getRegistry().entrySet()) {
             beanFactroy.registerBeanDefinition(definitionEntry.getKey(), definitionEntry.getValue());
         }
+        String packageName = reader.getPackageName();
+        if (packageName == null) {
+            return;
+        }
+        AnnotationParser parser = new AnnotationParser();
+        parser.AnnotationParserReader(packageName);
+        for (Map.Entry<String, BeanDefinition> definitionEntry : parser.getMap().entrySet()) {
+            beanFactroy.registerBeanDefinition(definitionEntry.getKey(), definitionEntry.getValue());
+        }
+
     }
 }

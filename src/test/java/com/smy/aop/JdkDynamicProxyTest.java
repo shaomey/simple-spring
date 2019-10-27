@@ -17,7 +17,7 @@ public class JdkDynamicProxyTest {
         Subject subject = (Chinese) applicationContext.getBean("chinese");
         subject.sayName();
         TestIntercepter testIntercepter = new TestIntercepter();
-        TargetSource source = new TargetSource(Subject.class, subject);
+        TargetSource source = new TargetSource(subject, Subject.class);
         AdvisedSupport advisedSupport = new AdvisedSupport();
         advisedSupport.setTargetSource(source);
         advisedSupport.setMethodInterceptor(testIntercepter);

@@ -63,7 +63,13 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
             Node node = list.item(i);
             if (node instanceof Element) {
                 Element element = (Element) node;
-                processBeanDefinition(element);
+                String packageName = null;
+                packageName = element.getAttribute("base-package");
+                if (packageName != null && packageName.length() > 0) {
+                    setPackageName(packageName);
+                } else {
+                    processBeanDefinition(element);
+                }
             }
         }
     }
@@ -71,6 +77,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
     /**
      * 这个方法就是从一个bean中获取name和class
      * 并将name和class值放到beanDefinition中
+     *
      * @param ele
      */
     protected void processBeanDefinition(Element ele) {
@@ -79,6 +86,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
         BeanDefinition beanDefinition = new BeanDefinition();
         processProperty(ele, beanDefinition);
         beanDefinition.setBeanClsName(className);
+        System.out.println(className);
         getRegistry().put(name, beanDefinition);
     }
 
